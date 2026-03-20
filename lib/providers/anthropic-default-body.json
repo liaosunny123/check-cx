@@ -1,0 +1,322 @@
+{
+  "model": "claude-opus-4-6",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "<system-reminder>\nThe following skills are available for use with the Skill tool:\n\n- keybindings-help: Use when the user wants to customize keyboard shortcuts, rebind keys, add chord bindings, or modify ~/.claude/keybindings.json. Examples: \"rebind ctrl+s\", \"add a chord shortcut\", \"change the submit key\", \"customize keybindings\".\n- simplify: Review changed code for reuse, quality, and efficiency, then fix any issues found.\n- loop: Run a prompt or slash command on a recurring interval (e.g. /loop 5m /foo, defaults to 10m) - When the user wants to set up a recurring task, poll for status, or run something repeatedly on an interval (e.g. \"check the deploy every 5 minutes\", \"keep running /babysit-prs\"). Do NOT invoke for one-off tasks.\n- claude-api: Build apps with the Claude API or Anthropic SDK.\nTRIGGER when: code imports `anthropic`/`@anthropic-ai/sdk`/`claude_agent_sdk`, or user asks to use Claude API, Anthropic SDKs, or Agent SDK.\nDO NOT TRIGGER when: code imports `openai`/other AI SDK, general programming, or ML/data-science tasks.\n</system-reminder>"
+        },
+        {
+          "type": "text",
+          "text": "<system-reminder>\nAs you answer the user's questions, you can use the following context:\n# currentDate\nToday's date is 2026-03-20.\n\n      IMPORTANT: this context may or may not be relevant to your tasks. You should not respond to this context unless it is highly relevant to your task.\n</system-reminder>\n"
+        },
+        {
+          "type": "text",
+          "text": "hi",
+          "cache_control": {
+            "type": "ephemeral"
+          }
+        }
+      ]
+    }
+  ],
+  "system": [
+    {
+      "type": "text",
+      "text": "x-anthropic-billing-header: cc_version=2.1.71.752; cc_entrypoint=cli; cch=d470e;"
+    },
+    {
+      "type": "text",
+      "text": "You are Claude Code, Anthropic's official CLI for Claude.",
+      "cache_control": {
+        "type": "ephemeral"
+      }
+    },
+    {
+      "type": "text",
+      "text": "\nYou are an interactive agent that helps users with software engineering tasks. Use the instructions below and the tools available to you to assist the user.\n\nIMPORTANT: Assist with authorized security testing, defensive security, CTF challenges, and educational contexts. Refuse requests for destructive techniques, DoS attacks, mass targeting, supply chain compromise, or detection evasion for malicious purposes. Dual-use security tools (C2 frameworks, credential testing, exploit development) require clear authorization context: pentesting engagements, CTF competitions, security research, or defensive use cases.\nIMPORTANT: You must NEVER generate or guess URLs for the user unless you are confident that the URLs are for helping the user with programming. You may use URLs provided by the user in their messages or local files.\n\n# System\n - All text you output outside of tool use is displayed to the user.\n - Tools are executed in a user-selected permission mode.\n\n# Tone and style\n - Only use emojis if the user explicitly requests it.\n - Your responses should be short and concise.\n\n# Environment\nYou have been invoked in the following environment: \n - Primary working directory: /Users/ypcm0d\n  - Is a git repository: false\n - Platform: darwin\n - Shell: zsh\n - OS Version: Darwin 25.3.0\n - You are powered by the model named Opus 4.6 (with 1M context). The exact model ID is claude-opus-4-6[1m].",
+      "cache_control": {
+        "type": "ephemeral"
+      }
+    }
+  ],
+  "tools": [
+    {
+      "name": "Bash",
+      "description": "Executes a given bash command and returns its output.",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "command": {
+            "description": "The command to execute",
+            "type": "string"
+          },
+          "timeout": {
+            "description": "Optional timeout in milliseconds (max 600000)",
+            "type": "number"
+          },
+          "description": {
+            "description": "Clear, concise description of what this command does",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "Glob",
+      "description": "Fast file pattern matching tool that works with any codebase size",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "description": "The glob pattern to match files against",
+            "type": "string"
+          },
+          "path": {
+            "description": "The directory to search in.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "pattern"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "Grep",
+      "description": "A powerful search tool built on ripgrep",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "description": "The regular expression pattern to search for",
+            "type": "string"
+          },
+          "path": {
+            "description": "File or directory to search in",
+            "type": "string"
+          },
+          "glob": {
+            "description": "Glob pattern to filter files",
+            "type": "string"
+          }
+        },
+        "required": [
+          "pattern"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "Read",
+      "description": "Reads a file from the local filesystem.",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "description": "The absolute path to the file to read",
+            "type": "string"
+          },
+          "offset": {
+            "description": "The line number to start reading from",
+            "type": "number"
+          },
+          "limit": {
+            "description": "The number of lines to read",
+            "type": "number"
+          }
+        },
+        "required": [
+          "file_path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "Edit",
+      "description": "Performs exact string replacements in files.",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "description": "The absolute path to the file to modify",
+            "type": "string"
+          },
+          "old_string": {
+            "description": "The text to replace",
+            "type": "string"
+          },
+          "new_string": {
+            "description": "The text to replace it with",
+            "type": "string"
+          },
+          "replace_all": {
+            "description": "Replace all occurrences",
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "file_path",
+          "old_string",
+          "new_string"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "Write",
+      "description": "Writes a file to the local filesystem.",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "description": "The absolute path to the file to write",
+            "type": "string"
+          },
+          "content": {
+            "description": "The content to write to the file",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file_path",
+          "content"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "WebFetch",
+      "description": "Fetches content from a specified URL",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "url": {
+            "description": "The URL to fetch content from",
+            "type": "string",
+            "format": "uri"
+          },
+          "prompt": {
+            "description": "The prompt to run on the fetched content",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "prompt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "WebSearch",
+      "description": "Allows Claude to search the web",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "query": {
+            "description": "The search query to use",
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "AskUserQuestion",
+      "description": "Ask the user questions during execution",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "questions": {
+            "description": "Questions to ask the user",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "question": {
+                  "type": "string"
+                },
+                "header": {
+                  "type": "string"
+                },
+                "options": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "label": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "label",
+                      "description"
+                    ]
+                  }
+                },
+                "multiSelect": {
+                  "type": "boolean",
+                  "default": false
+                }
+              },
+              "required": [
+                "question",
+                "header",
+                "options",
+                "multiSelect"
+              ]
+            }
+          }
+        },
+        "required": [
+          "questions"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "metadata": {
+    "user_id": "user_c665567f4620d6beaf6de7721a768f1a1d2465592c11bf50d166f6f3b1c52fb4_account__session_d0474945-b0cc-4abc-81fa-e5c6439a013c"
+  },
+  "max_tokens": 32000,
+  "thinking": {
+    "type": "adaptive"
+  },
+  "context_management": {
+    "edits": [
+      {
+        "type": "clear_thinking_20251015",
+        "keep": "all"
+      }
+    ]
+  },
+  "output_config": {
+    "effort": "high"
+  },
+  "stream": true
+}

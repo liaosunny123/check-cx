@@ -1,10 +1,10 @@
 services:
   check-cx:
-    image: bingzi233/check-cx:latest
+    build: .
     container_name: check-cx
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3033:3000"
     env_file:
       - .env
     environment:

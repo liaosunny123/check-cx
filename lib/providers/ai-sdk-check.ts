@@ -29,6 +29,7 @@ import { DEFAULT_ENDPOINTS } from "../types";
 import { getSanitizedErrorDetail } from "../utils";
 import { generateChallenge, validateResponse } from "./challenge";
 import { measureEndpointPing } from "./endpoint-ping";
+import { checkAnthropicRaw } from "./anthropic-raw-check";
 
 /* ============================================================================
  * 常量定义
@@ -495,6 +496,11 @@ function buildCheckResult(
  * - error：请求过程中发生异常
  */
 export async function checkWithAiSdk(config: ProviderConfig): Promise<CheckResult> {
+  // Anthropic 使用原始 HTTP 请求检测
+  if (config.type === "anthropic") {
+    return checkAnthropicRaw(config);
+  }
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
   const startedAt = Date.now();
