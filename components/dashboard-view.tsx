@@ -784,6 +784,8 @@ export function DashboardView({ initialData }: DashboardViewProps) {
                实时追踪各大 AI 模型对话接口的可用性、延迟与官方服务状态。
                <br />
                Advanced performance metrics for next-gen intelligence.
+               <br />
+               SoruxGPT Code 入口：<a href="https://app.soruxgpt.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">https://app.soruxgpt.com</a>
              </p>
           </div>
         </div>
